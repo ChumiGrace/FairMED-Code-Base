@@ -16,7 +16,7 @@ function LogoutPopup({ onConfirm, onCancel }) {
   );
 }
 
-function Sidebar() {
+function Sidebar( {acc} ) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -71,7 +71,7 @@ function Sidebar() {
               </span>
             </a>
             <div className="nav_list">
-              <a href="/patient-dashboard" className="nav_link" onClick={handleLinkClick}>
+              <a href={`/${acc}-dashboard`} className="nav_link" onClick={handleLinkClick}>
                 <i className="bx bx-grid-alt nav_icon"></i>
                 <span className="nav_name">Dashboard</span>
               </a>

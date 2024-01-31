@@ -5,8 +5,8 @@ import { useState } from 'react';
 
 
 
-const Profile = () => {
-  const ProfileSection = () => {
+const Profile = ({user}) => {
+  const ProfileSection = ({acc}) => {
     const [isBordered, setIsBordered] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [user, setUser] = useState({
@@ -20,7 +20,8 @@ const Profile = () => {
     const [data, setData] = useState({});
   const id = localStorage.getItem("id");
   const token = localStorage.getItem("access_token");
-  const url = `http://127.0.0.1:8000/patient_profile/${id}/`;
+  const url = `http://127.0.0.1:8000/${acc}/${id}/`;
+  const update_url = `http://127.0.0.1:8000/${acc}/${id}/`
 
   useEffect(()=>{
 
@@ -42,7 +43,23 @@ const Profile = () => {
 
     fetchData()
   }, [token, url])
-    console.log(data);
+
+  const UpdataUser = async () => {
+    const res = await fetch(update_url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type':'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(user)
+    })
+    if (!res.ok){
+      throw new Error(`HTTP Error! Status: ${res.status}`)
+    } else {
+      console.log(await res.json())
+    }
+  }
+
   useEffect(() => {
     setUser({
       name: data['name'],
@@ -68,19 +85,18 @@ const Profile = () => {
     };
   
     const saveChanges = () => {
-
-      console.log('Changes saved:');
-  
-
+      UpdataUser()
       setIsBordered(false);
     };
+
+    console.log(user)
   
     return (
       <div className={`profile-section${isBordered ? ' bordered' : ''}`} id="profile-section">
         <div className='p-4'>
         <label htmlFor="name" className='lable-label text-primary'>Name</label><br />
         {isBordered ? (
-          <input type="text" value={user.name} onChange={handleChange} className="form-control" />
+          <input type="text" name='name' value={user.name} onChange={handleChange} className="form-control" />
         ) : (
           <span id="name">{user.name}</span>
         )}
@@ -89,7 +105,7 @@ const Profile = () => {
   
         <label htmlFor="email" className='text-primary'>Email</label><br />
         {isBordered ? (
-          <input type="text" value={user.email} onChange={handleChange} className="form-control" />
+          <input type="text" name='email' value={user.email} onChange={handleChange} className="form-control" />
         ) : (
           <span id="email">{user.email}</span>
         )}
@@ -98,7 +114,7 @@ const Profile = () => {
   
         <label htmlFor="phone" className='text-primary'>Phone Number</label><br />
         {isBordered ? (
-          <input type="text" value={user.phone} onChange={handleChange} className="form-control" />
+          <input type="text" name='phone' value={user.phone} onChange={handleChange} className="form-control" />
         ) : (
           <span id="phone">{user.phone}</span>
         )}
@@ -171,7 +187,7 @@ const Profile = () => {
     </div>
 
     <div>
-    <ProfileSection />
+    <ProfileSection acc={user}/>
     </div>
   </div>
 </div>

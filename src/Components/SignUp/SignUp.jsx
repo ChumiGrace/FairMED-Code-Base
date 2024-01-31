@@ -6,7 +6,7 @@ import { Link,useNavigate } from 'react-router-dom';
 function SignUp() {
     const [usePhoneNumber, setUsePhoneNumber] = useState(false);
     const [emailOrPhoneNumber, setEmailOrPhoneNumber] = useState('');
-    const [activeButton, setActiveButton] = useState('patient');
+    const [activeButton, setActiveButton] = useState('');
     const navigate = useNavigate()
 
     const reg_url = `http://127.0.0.1:8000/register/${activeButton}/`
@@ -25,7 +25,7 @@ function SignUp() {
 
     const handleDoctorClick = () => {
       setIsDoctor(true);
-      setActiveButton('doctor');
+      setActiveButton('physician');
     };
 
     const handlePatientClick = () => {
@@ -99,16 +99,13 @@ function SignUp() {
         }
       
         setErrors(validationErrors);
-        const res = await sendData(regFormData)
-        if (res){
-          const response = {
-            'email': await res.email,
-            'password': await res.password
-          }
-          console.log(localStorage.getItem('access_token'))
-        await loginUser(response, localStorage.getItem('access_token'))
-      }
-        navigate('/patient-dashboard')
+        const signup = await sendData(regFormData)
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        if (signup){
+          navigate(`/login`)
+        }else {
+          alert('Your Information is not Valid!')
+        }
       };
 
   const sendData = async (formData) => {
@@ -118,28 +115,15 @@ function SignUp() {
     })
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    
-    return data['data']
-  }
-
-  const loginUser = async (formData, token) => {
-    const response =await fetch(log_url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(formData)
-    })
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+    }else{
+      if(response.status === 201){
+        return true
       }
-      const data = await response.json();
+      else {
+        return false
+      }
+    }
     
-      localStorage.setItem('access_token',data['token'])
-      localStorage.setItem('id', data['id'])
   }
   
   
@@ -171,6 +155,7 @@ function SignUp() {
                     <div className="form-floating mb-3">
                         <input
                         type="text"
+                        disabled={activeButton ? false : true}
                         className="form-control"
                         id="floatingFirstName"
                         name="firstName"
@@ -186,6 +171,7 @@ function SignUp() {
                     <div className="form-floating mb-3">
                         <input
                         type="text"
+                        disabled={activeButton ? false : true}
                         className="form-control"
                         id="floatingLastName"
                         name="lastName"
@@ -205,6 +191,7 @@ function SignUp() {
                         <input
                             type="email"
                             name="email"
+                            disabled={activeButton ? false : true}
                             className="form-control"
                             id="floatingInput"
                             placeholder="name@example.com"
@@ -227,6 +214,7 @@ function SignUp() {
                       <div className="form-floating mb-3">
                         <input
                           type="text"
+                          disabled={activeButton ? false : true}
                           name="phoneNumber"
                           className="form-control"
                           id="floatingInput"
@@ -251,6 +239,7 @@ function SignUp() {
                     <div className="form-floating mb-3">
                     <input
                         type="password"
+                        disabled={activeButton ? false : true}
                         className="form-control"
                         id="floatingPassword"
                         name="password"
@@ -264,6 +253,7 @@ function SignUp() {
                       <input
                         type="password"
                         name="password2"
+                        disabled={activeButton ? false : true}
                         className="form-control"
                         id="floatingPassword"
                         placeholder="Password"
@@ -275,6 +265,7 @@ function SignUp() {
                     <div className="form-floating mb-3">
                       <input
                         type="text"
+                        disabled={activeButton ? false : true}
                         className="form-control"
                         id="floatingAddress"
                         placeholder="Address"
@@ -286,6 +277,7 @@ function SignUp() {
                          <label htmlFor="uploadLicense" className="form-label text-white">Upload License</label>
                         <input
                           type="file"
+                          disabled={activeButton ? false : true}
                           className="form-control"
                           id="uploadLicense"
                           placeholder="Upload License"
@@ -300,6 +292,7 @@ function SignUp() {
                       <button
                         className="btn btn-lg btn-primary btn-signup text-uppercase fw-bold mb-2"
                         type="submit"
+                        disabled={activeButton ? false : true}
                       >
                         Sign up
                       </button>

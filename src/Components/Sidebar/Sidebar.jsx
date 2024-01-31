@@ -39,6 +39,8 @@ function Sidebar() {
   };
 
   const handleLogoutConfirm = () => {
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('id')
     window.location.href = '/home';
   };
 

@@ -162,7 +162,7 @@ function PatientDashboard() {
         </div>
 
         <div className="profile">
-          <Profile />
+          <Profile user="patient_profile" />
         </div>
       </div>
     </div>

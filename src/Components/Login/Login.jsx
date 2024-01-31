@@ -10,14 +10,15 @@ function Login() {
   const navigate = useNavigate()
 
   console.log(activeButton)
-
-
+  
+  
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
     password: '',
   });
-
+  
+  console.log(formData)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,9 +44,10 @@ function Login() {
     };
 
   const handleSubmit = async () => {
-    loginUser()
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    navigate(`/${activeButton}-dashboard`)
+    const log = await loginUser()
+    if (log){
+      navigate(`/${activeButton}-dashboard`)
+    } 
   }
 
 
@@ -55,7 +57,7 @@ function Login() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     })
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -65,6 +67,12 @@ function Login() {
     
       localStorage.setItem('access_token',data['token'])
       localStorage.setItem('id', data['id'])
+
+      if (data['token'] !== undefined){
+        return true
+      } else {
+        return false
+      }
   }
 
 
