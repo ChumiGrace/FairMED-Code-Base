@@ -157,7 +157,7 @@ function Login() {
                           </a>
                         </div>
                         <div className="text-center">
-                             <a className="small text-white" href="#">Forgot password?</a>
+                             <a className="small text-white" href="/forgot-password">Forgot password?</a>
                         </div>
                         <div id="emailHelp" class="form-text text-center mt-4 text-white">Not Registered? 
                         <a href="/signup" class="fw-bold text-decoration-none text-info"> Create an Account</a>
